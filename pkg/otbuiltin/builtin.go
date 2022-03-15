@@ -5,6 +5,7 @@ package otbuiltin
 import (
 	"errors"
 	"fmt"
+	"log"
 	"runtime"
 	"unsafe"
 
@@ -75,6 +76,7 @@ func (repo *Repo) ResolveRev(refspec string, allowNoent bool) (string, error) {
 func OpenRepo(path string) (*Repo, error) {
 	var cerr *C.GError = nil
 	cpath := C.CString(path)
+	log.Printf("otbuiltin:Openrepo:path: %s\n", path)
 	pathc := C.g_file_new_for_path(cpath)
 	defer C.g_object_unref(C.gpointer(pathc))
 	crepo := C.ostree_repo_new(pathc)

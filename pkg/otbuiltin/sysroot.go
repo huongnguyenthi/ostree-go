@@ -3,6 +3,7 @@ package otbuiltin
 import (
 	"errors"
 	glib "github.com/sjoerdsimons/ostree-go/pkg/glibobject"
+	"log"
 	"os"
 	"path"
 	"runtime"
@@ -46,10 +47,12 @@ func (s *Sysroot) native() *C.OstreeSysroot {
 }
 
 func (s Sysroot) Path() string {
+	log.Printf("Sysroot: Path %s\n", s.path)
 	return s.path
 }
 
 func (s Sysroot) InitializeFS() error {
+	log.Printf("Sysroot: InitializeFS \n")
 	toplevels := []struct {
 		name string
 		perm os.FileMode
@@ -148,14 +151,17 @@ func (s *Sysroot) DeployTree(osname, revision string, origin *glib.GKeyFile, pro
 	var cdeployment *C.OstreeDeployment = nil
 
 	cosname := C.CString(osname)
+	log.Printf("Sysroot:DeployTree:osname %s\n", osname)
 	defer C.free(unsafe.Pointer(cosname))
 
 	crevision := C.CString(revision)
+	log.Printf("Sysroot:DeployTree: %s\n", revision)
 	defer C.free(unsafe.Pointer(crevision))
 
 	coverrideKernelArgv := make([]*C.char, len(overrideKernelArgv)+1)
 	for i, s := range overrideKernelArgv {
 		coverrideKernelArgv[i] = C.CString(s)
+		log.Printf("Sysroot:DeployTree: %s\n", s)
 	}
 	coverrideKernelArgv[len(overrideKernelArgv)] = nil
 
